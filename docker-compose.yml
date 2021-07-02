@@ -1,0 +1,27 @@
+version: "3"
+services:
+   mongodb:
+     container_name: mongo-neoway
+     image: mongo
+   api:
+     image: renatoalvesbelem/neoway-documento-api:latest
+     container_name: neoway-documento-api
+     depends_on:
+       - mongodb
+     ports:
+       - 8080:8080
+     links:
+       - mongodb
+     environment:
+       SPRING_DATA_MONGODB_URI: mongodb://mongodb/neoway
+       JAVA_OPTS: -Dcors.origin=http://localhost -Dpage.size=2
+   web:
+     image: renatoalvesbelem/neoway-documento-web:latest
+     container_name: neoway-documento-web
+     depends_on:
+       - api
+       - mongodb
+     ports:
+       - 80:80
+     links:
+       - api
